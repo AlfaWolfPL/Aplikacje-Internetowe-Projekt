@@ -17,7 +17,7 @@ abstract class DefaultModel
         return $this->id;
     }
 
-    public function setId(?int $id): DefaultModel
+    public function setId(?int $id): static
     {
         $this->id = $id;
         return $this;
@@ -32,14 +32,14 @@ abstract class DefaultModel
         );
     }
 
-    public static function fromArray(array $data): DefaultModel
+    public static function fromArray(array $data): static
     {
         $obj = new static();
         $obj->fill($data);
         return $obj;
     }
 
-    public function fill(array $data): DefaultModel
+    public function fill(array $data): static
     {
         if (isset($data['id']) && ! $this->getId()) {
             $this->setId((int)$data['id']);
@@ -109,7 +109,8 @@ abstract class DefaultModel
                 " SET $assignments WHERE id = :id";
 
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(array_merge($data, ['id' => $this->getId()]));
+            $data['id'] = $this->getId();
+            $stmt->execute($data);
         }
     }
 
