@@ -4,7 +4,7 @@ namespace App\Model;
 
 class Platform extends DefaultModel
 {
-    protected static string $table = 'categories';
+    protected static string $table = 'platforms';
     protected static array $fields = ['name'];
 
     protected string $name;

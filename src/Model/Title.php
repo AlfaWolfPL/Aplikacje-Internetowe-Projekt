@@ -184,4 +184,50 @@ SQL;
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['title_id' => $id, 'category_id' => $categoryId]);
     }
+
+    public static function search(string $query = '', ?int $categoryId = null, ?int $platformId = null): array
+    {
+        $pdo = static::db();
+
+        $sql = "SELECT t.* FROM titles t";
+        $params = [];
+        $conditions = [];
+
+        if ($categoryId) {
+            $sql .= " JOIN title_categories tc ON t.id = tc.title_id";
+            $conditions[] = "tc.category_id = :catId";
+            $params['catId'] = $categoryId;
+        }
+
+        if ($platformId) {
+            $sql .= " JOIN title_platforms tp ON t.id = tp.title_id";
+            $conditions[] = "tp.platform_id = :platId";
+            $params['platId'] = $platformId;
+        }
+
+        if (!empty($query)) {
+            $conditions[] = "(t.title LIKE :query OR t.description LIKE :query)";
+            $params['query'] = '%' . $query . '%';
+        }
+
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(' AND ', $conditions);
+        }
+
+        $sql .= " GROUP BY t.id";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $titles = array_map(fn($r) => static::fromArray($r), $rows);
+
+        foreach ($titles as $title) {
+            $title->setCategories(Category::findByTitle($title->getId()));
+            $title->setPlatforms(Platform::findByTitle($title->getId()));
+        }
+
+        return $titles;
+    }
 }

@@ -124,6 +124,9 @@
     outline: none;
     transition: all 0.2s ease;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding-left: 2.8rem;
+    cursor: pointer;
+    appearance: none;
 }
 
 .search-input:focus {
@@ -142,6 +145,8 @@
     gap: 0.75rem;
     min-width: max-content;
     padding: 0 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
 }
 
 .filter-btn {
@@ -159,6 +164,16 @@
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
+}
+
+.filter-btn-select {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-gray);
+    pointer-events: none;
+    font-size: 1.2rem;
 }
 
 .filter-btn:hover {
