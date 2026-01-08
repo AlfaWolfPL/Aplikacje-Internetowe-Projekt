@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Exception\NotFoundException;
-use App\Model\Movie; //TODO: Set proper model
+use App\Model\Title;
 use App\Service\Router;
 use App\Service\Templating;
 
@@ -11,10 +11,10 @@ class MovieController
     public function indexAction(Templating $templating, Router $router): ?string
     {
         //Wyswietlanie filmow na stronie glownej (dodac "q" w findAll)
-        //$movies = Movie::findAll();
+        $titles = Title::findAll(true);
 
         $html = $templating->render('movie/index.html.php', [
-            //'movies' => $movies,
+            'titles' => $titles,
             'router' => $router,
         ]);
         return $html;
@@ -23,7 +23,7 @@ class MovieController
 
     public function showAction(int $movieId, Templating $templating, Router $router): ?string
     {
-        $movie = Movie::find($movieId);
+        $movie = Title::find($movieId);
         if (! $movie) {
             throw new NotFoundException("Missing movie with id $movieId");
         }

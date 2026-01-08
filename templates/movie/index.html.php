@@ -1,5 +1,5 @@
 <?php
-/** @var \App\Model\Movie[] $movies */
+/** @var \App\Model\Title[] $titles */
 /** @var \App\Service\Router $router */
 /** @var ?string $query */
 
@@ -66,10 +66,54 @@ ob_start(); ?>
             </a>
         </div>
 
-        <div class="movies-grid">
-            <div class="no-results">
-                <p>No movies found.</p>
-            </div>
+        <div class="movie-grid">
+            <?php if (empty($titles)): ?>
+                <p>Nie znaleziono filmów w bazie.</p>
+            <?php else: ?>
+                <?php foreach ($titles as $movie): ?>
+                    <div class="movie-card">
+
+                        <div class="movie-info">
+                            <h3><?= htmlspecialchars($movie->getTitle(), ENT_QUOTES) ?></h3>
+
+                            <div class="meta-row">
+                                <span class="match-score"><?= htmlspecialchars(ucfirst($movie->getKind()), ENT_QUOTES) ?></span>
+
+                                <span class="quality-badge">HD</span>
+                            </div>
+
+                            <div class="genre-list">
+                                <?php
+                                $cats = $movie->getCategories();
+                                if (!empty($cats)) {
+                                    $catNames = array_map(fn($c) => $c->getName(), $cats);
+                                    echo htmlspecialchars(implode(' • ', array_slice($catNames, 0, 3)), ENT_QUOTES);
+                                }
+                                ?>
+                            </div>
+
+                            <div class="action-buttons">
+                                <span class="material-symbols-outlined">play_arrow</span>
+                                <span class="material-symbols-outlined">add</span>
+                            </div>
+
+                            <div class="platforms-list" style="font-size: 0.8em; color: #aaa; margin-top: 5px;">
+                                <?php
+                                $plats = $movie->getPlatforms();
+                                $platNames = array_map(fn($p) => $p->getName(), $plats);
+                                echo htmlspecialchars(implode(', ', $platNames), ENT_QUOTES);
+                                ?>
+                            </div>
+                            <a href="<?= $router->generatePath('movie-show', ['id' => $movie->getId()]) ?>" class="btn-play">
+
+                            <div class="movie-poster">
+                                <img src="https://placehold.co/210x350?text=<?= urlencode($movie->getTitle()) ?>" alt="<?= htmlspecialchars($movie->getTitle(), ENT_QUOTES) ?>">
+                            </div>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </section>
 </main>
