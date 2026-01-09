@@ -38,7 +38,7 @@ class MovieController
 
     public function showAction(int $movieId, Templating $templating, Router $router): ?string
     {
-        $movie = Title::find($movieId);
+        $movie = Title::find($movieId,true);
         if (! $movie) {
             throw new NotFoundException("Missing movie with id $movieId");
         }
