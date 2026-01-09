@@ -5,12 +5,12 @@ namespace App\Model;
 class Title extends DefaultModel
 {
     protected static string $table = 'titles';
-    protected static array $fields = ['title', 'description', 'kind', 'releaseYear'];
+    protected static array $fields = ['title', 'description', 'kind', 'year'];
     private string $title;
     private string $description;
 
     private string $kind;
-    private string $year;
+    private ?int $year = null;
     private array $platforms = [];
     private array $categories = [];
 
@@ -47,12 +47,12 @@ class Title extends DefaultModel
         return $this;
     }
 
-    public function getYear(): string
+    public function getYear(): ?int
     {
         return $this->year;
     }
 
-    public function setYear(string $year): self
+    public function setYear(?int $year): self
     {
         $this->year = $year;
         return $this;

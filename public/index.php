@@ -13,6 +13,17 @@ switch ($action) {
         $controller= new \App\Controller\MovieController();
         $view = $controller->indexAction($templating,$router);
         break;
+        case 'movie-show':
+            if (! $_REQUEST['id']) {
+                break;
+            }
+            $controller= new \App\Controller\MovieController();
+            $view = $controller->showAction($_REQUEST['id'],$templating,$router);
+            break;
+    case 'info':
+        $controller = new \App\Controller\InfoController();
+        $view = $controller->infoAction();
+        break;
     default:
         $view = 'Not found';
         break;
