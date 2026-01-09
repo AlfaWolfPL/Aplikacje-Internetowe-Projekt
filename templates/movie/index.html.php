@@ -1,7 +1,9 @@
 <?php
-/** @var \App\Model\Movie[] $movies */
+/** @var \App\Model\Title[] $titles */
 /** @var \App\Service\Router $router */
-/** @var ?string $query */
+/** @var array $queryParams */
+/** @var \App\Model\Category[] $categories */
+/** @var \App\Model\Platform[] $platforms */
 
 $title = 'Movies';
 $bodyClass = 'movie-index';
@@ -21,38 +23,51 @@ ob_start(); ?>
             Find where to <span class="search-highlight">watch</span> anything
         </h1>
 
-        <form class="search-form" method="get" action="<?= $router->generatePath('movie-index') ?>">
+        <form action="<?= $router->generatePath('movie-index') ?>" method="GET" class="search-form">
             <div class="search-container">
-                <div class="search-icon">
-                    <span class="icon-search">search</span>
-                </div>
-                <input class="search-input"
-                       type="text"
-                       name="q"
+                <span class="search-icon material-symbols-outlined">search</span>
+                <input type="text" name="q" class="search-input"
                        placeholder="Search titles, actors, or genres..."
-                       value="<?= htmlspecialchars($query ?? '', ENT_QUOTES) ?>"
-                       required>
+                       value="<?= htmlspecialchars($queryParams['q'] ?? '') ?>">
+            </div>
+
+            <div class="filters-container">
+
+                <div style="position: relative;">
+                    <span class="material-symbols-outlined filter-btn-select">category</span>
+                    <select name="category" class="search-input">
+                        <option value="">Categories</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?= $cat->getId() ?>" <?= ($queryParams['category'] == $cat->getId()) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($cat->getName()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div style="position: relative;">
+                    <span class="material-symbols-outlined filter-btn-select">tv</span>
+                    <select name="platform" class="search-input">
+                        <option value="">Platforms</option>
+                        <?php foreach ($platforms as $plat): ?>
+                            <option value="<?= $plat->getId() ?>" <?= ($queryParams['platform'] == $plat->getId()) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($plat->getName()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <button type="submit" class="filter-btn" style="background-color: var(--primary-color); color: black; border: none; font-weight: 700;">
+                    Search
+                </button>
+
+                <?php if (!empty($queryParams['q']) || !empty($queryParams['category']) || !empty($queryParams['platform'])): ?>
+                    <a href="<?= $router->generatePath('movie-index') ?>" class="filter-btn" style="text-decoration: none; color: var(--text-gray);">
+                        Clear
+                    </a>
+                <?php endif; ?>
             </div>
         </form>
-
-        <div class="filters-container">
-            <button class="filter-btn" aria-label="Type">
-                <span class="filter-text">Type</span>
-                <span class="icon-expand">expand_more</span>
-            </button>
-            <button class="filter-btn" aria-label="Watched">
-                <span class="filter-text">Watched</span>
-                <span class="icon-check">check</span>
-            </button>
-            <button class="filter-btn" aria-label="Liked">
-                <span class="filter-text">Liked</span>
-                <span class="icon-favorite">favorite</span>
-            </button>
-            <button class="filter-btn" aria-label="Platform">
-                <span class="filter-text">Platform</span>
-                <span class="icon-expand">expand_more</span>
-            </button>
-        </div>
     </section>
 
     <section class="movies-section">
@@ -66,10 +81,56 @@ ob_start(); ?>
             </a>
         </div>
 
-        <div class="movies-grid">
-            <div class="no-results">
-                <p>No movies found.</p>
-            </div>
+        <div class="movie-grid">
+            <?php if (empty($titles)): ?>
+                <div class="no-results">
+                    <p>No movies found.</p>
+                </div>
+            <?php else: ?>
+                <?php foreach ($titles as $movie): ?>
+                    <div class="movie-card">
+
+                        <div class="movie-info">
+                            <h3><?= htmlspecialchars($movie->getTitle(), ENT_QUOTES) ?></h3>
+
+                            <div class="meta-row">
+                                <span class="match-score"><?= htmlspecialchars(ucfirst($movie->getKind()), ENT_QUOTES) ?></span>
+
+                                <span class="quality-badge">HD</span>
+                            </div>
+
+                            <div class="genre-list">
+                                <?php
+                                $cats = $movie->getCategories();
+                                if (!empty($cats)) {
+                                    $catNames = array_map(fn($c) => $c->getName(), $cats);
+                                    echo htmlspecialchars(implode(' • ', array_slice($catNames, 0, 3)), ENT_QUOTES);
+                                }
+                                ?>
+                            </div>
+
+                            <div class="action-buttons">
+                                <span class="material-symbols-outlined">play_arrow</span>
+                                <span class="material-symbols-outlined">add</span>
+                            </div>
+
+                            <div class="platforms-list" style="font-size: 0.8em; color: #aaa; margin-top: 5px;">
+                                <?php
+                                $plats = $movie->getPlatforms();
+                                $platNames = array_map(fn($p) => $p->getName(), $plats);
+                                echo htmlspecialchars(implode(', ', $platNames), ENT_QUOTES);
+                                ?>
+                            </div>
+                            <a href="<?= $router->generatePath('movie-show', ['id' => $movie->getId()]) ?>" class="btn-play">
+
+                            <div class="movie-poster">
+                                <img src="https://placehold.co/210x350?text=<?= urlencode($movie->getTitle()) ?>" alt="<?= htmlspecialchars($movie->getTitle(), ENT_QUOTES) ?>">
+                            </div>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </section>
 </main>
