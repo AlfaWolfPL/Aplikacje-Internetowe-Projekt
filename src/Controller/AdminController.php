@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Model\Title;
+use App\Service\CSVImporter;
 use App\Service\Router;
 use App\Service\Templating;
 
@@ -38,7 +39,7 @@ class AdminController
         return $html;
     }
 
-    public function importCsvAction(?array $files, Router $router): ?string
+    public function importCsvAction(?array $files, Router $router, CSVImporter $importer): void
     {
         if ($files && isset($files['csv_file'])) {
             $file = $files['csv_file'];
@@ -50,11 +51,11 @@ class AdminController
                 $filePath = $uploadDir . uniqid('csv_') . '.csv';
 
                 if (move_uploaded_file($file['tmp_name'], $filePath)) {
-                    $result = runSingleCsvImport($filePath);
+                    $result = $importer->runSingleCsvImport($filePath);
                     unlink($filePath);
                     $_SESSION['csv_import_result'] = $result;
                     $router->redirect($router->generatePath('admin-index'));
-                    return null;
+                    return;
                 }
             }
 
