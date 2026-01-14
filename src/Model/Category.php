@@ -62,6 +62,21 @@ class Category extends DefaultModel
         return $categories;
     }
 
+    public static function findByName(string $name): ?Category
+    {
+        $pdo = static::db();
+        $sql = <<<SQL
+SELECT * FROM categories WHERE name = :name LIMIT 1;
+SQL;
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['name' => $name]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return Category::fromArray($row);
+        }
+        return null;
+    }
+
     public static function findByTitle(int $titleId): array
     {
         $pdo = static::db();

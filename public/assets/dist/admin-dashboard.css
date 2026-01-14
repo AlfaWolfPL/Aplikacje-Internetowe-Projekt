@@ -914,3 +914,15 @@
     background: #3F454F;
 }
 
+.confirm-delete a {
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-primary a {
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
+

@@ -44,27 +44,24 @@ ob_start();
         </div>
         <div class="card-body">
             <h3 class="card-title">Manage Streaming</h3>
-<!--            TODO podpiac dodawanie streamingu
--->            <p class="card-text">Add streaming platform</p>
         </div>
         <div class="card-footer card-footer-inline">
-            <input type="text" class="input" placeholder="Streaming name...">
-            <button class="btn btn-primary">ADD</button>
+            <button class="btn btn-primary">
+                <a style="none" href="<?= $router->generatePath('platform-index') ?>">Manage streaming platforms</a>
+            </button>
         </div>
     </div>
-
     <div class="card">
         <div class="card-icon card-icon-primary">
-            <span class="material-symbols-outlined">category</span>
+            <span class="material-symbols-outlined">settings_input_component</span>
         </div>
         <div class="card-body">
             <h3 class="card-title">Manage Categories</h3>
-<!--            TODO podpiac dodawanie kategorii
--->            <p class="card-text">Add category</p>
         </div>
         <div class="card-footer card-footer-inline">
-            <input type="text" class="input" placeholder="Category name...">
-            <button class="btn btn-primary">ADD</button>
+            <button class="btn btn-primary">
+                <a style="none" href="<?= $router->generatePath('category-index') ?>">Manage categories</a>
+            </button>
         </div>
     </div>
 </section>
