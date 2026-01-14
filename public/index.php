@@ -8,6 +8,7 @@ $templating = new \App\Service\Templating();
 $router = new \App\Service\Router();
 
 $action = $_REQUEST['action'] ?? null;
+$view = null;
 
 switch ($action) {
     case 'movie-index':
@@ -24,10 +25,11 @@ switch ($action) {
         break;
     case 'admin-import-csv':
         $controller = new \App\Controller\AdminController();
-        $view = $controller->importCsvAction($_FILES, $router);
+        $importer = new \App\Service\CSVImporter();
+        $controller->importCsvAction($_FILES, $router, $importer);
         break;
     case 'admin-index':
-        $controller= new \App\Controller\AdminController();
+        $controller = new \App\Controller\AdminController();
         $view = $controller->indexAction($templating,$router);
         break;
     case 'admin-add':

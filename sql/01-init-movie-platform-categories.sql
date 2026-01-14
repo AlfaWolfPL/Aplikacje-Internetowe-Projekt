@@ -1,21 +1,21 @@
 -- platformy streamingowe
 CREATE TABLE IF NOT EXISTS platforms
 (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- kategorie
 CREATE TABLE IF NOT EXISTS categories
 (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- filmy / seriale
 CREATE TABLE IF NOT EXISTS titles
 (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     kind VARCHAR(20) NOT NULL,
