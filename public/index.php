@@ -36,6 +36,38 @@ switch ($action) {
         $controller= new \App\Controller\AdminController();
         $view = $controller->addItemAction($templating,$router);
         break;
+    case 'category-add':
+        $controller = new \App\Controller\CategoryController();
+        $controller->addCategory($router, $_POST['category_name'] ?? '');
+        break;
+    case 'category-index':
+        $controller = new \App\Controller\CategoryController();
+        $view = $controller->index($templating, $router);
+        break;
+    case 'category-edit':
+        $controller = new \App\Controller\CategoryController();
+        $controller->editCategory($router, $_POST['category_id'], $_POST['category_name']);
+        break;
+    case 'category-delete':
+        $controller = new \App\Controller\CategoryController();
+        $controller->deleteCategory($router, $_POST['category_id'] ? (int)$_POST['category_id'] : null);
+        break;
+    case 'platform-add':
+        $controller = new \App\Controller\PlatformController();
+        $controller->addPlatform($router, $_POST['platform_name'] ?? '');
+        break;
+    case 'platform-index':
+        $controller = new \App\Controller\PlatformController();
+        $view = $controller->index($templating, $router);
+        break;
+    case 'platform-edit':
+        $controller = new \App\Controller\PlatformController();
+        $controller->editPlatform($router, $_POST['platform_id'], $_POST['platform_name']);
+        break;
+    case 'platform-delete':
+        $controller = new \App\Controller\PlatformController();
+        $controller->deletePlatform($router, $_POST['platform_id'] ? (int)$_POST['platform_id'] : null);
+        break;
     default:
         $view = 'Not found';
         break;

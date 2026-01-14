@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use PDO;
+
 class Platform extends DefaultModel
 {
     protected static string $table = 'platforms';
@@ -72,5 +74,20 @@ SQL;
 
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         return array_map(fn($r) => static::fromArray($r), $rows);
+    }
+
+    public static function findByName(string $name): ?Platform
+    {
+        $pdo = static::db();
+        $sql = <<<SQL
+SELECT * FROM platforms WHERE name = :name LIMIT 1;
+SQL;
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['name' => $name]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return Platform::fromArray($row);
+        }
+        return null;
     }
 }

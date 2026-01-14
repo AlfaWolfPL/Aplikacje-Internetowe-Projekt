@@ -1,12 +1,11 @@
 <?php
 namespace App\Controller;
 
+use App\Model\Category;
 use App\Model\Title;
 use App\Service\CSVImporter;
 use App\Service\Router;
 use App\Service\Templating;
-
-require_once __DIR__.'/../Service/CSVImporter.php';
 
 class AdminController
 {
@@ -66,7 +65,7 @@ class AdminController
         }
 
         $router->redirect($router->generatePath('admin-index'));
-        return null;
+        return;
     }
 
 }

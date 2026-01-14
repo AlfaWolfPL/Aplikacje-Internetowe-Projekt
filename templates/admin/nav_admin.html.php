@@ -10,6 +10,8 @@
     <div class="nav-links">
         <a href=<?= $router->generatePath('admin-index')?>  class="nav-link">Dashboard</a>
         <a href=<?= $router->generatePath('admin-add')?> class="nav-link">Add items</a>
+        <a href=<?= $router->generatePath('platform-index')?> class="nav-link">Streaming Platforms</a>
+        <a href=<?= $router->generatePath('category-index')?> class="nav-link">Categories</a>
     </div>
 
 </nav>
