@@ -56,6 +56,14 @@ ob_start(); ?>
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div style="position: relative;">
+                    <span class="material-symbols-outlined" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); pointer-events: none; font-size: 1.2rem;">movie_filter</span>
+                    <select name="kind" class="search-input" style="padding-left: 2.8rem; cursor: pointer; appearance: none;">
+                        <option value="">All kinds</option>
+                        <option value="movie" <?= ($queryParams['kind'] === 'movie') ? 'selected' : '' ?>>Movies</option>
+                        <option value="series" <?= ($queryParams['kind'] === 'series') ? 'selected' : '' ?>>Series</option>
+                    </select>
+                </div>
 
                 <button type="submit" class="filter-btn" style="background-color: var(--primary-color); color: black; border: none; font-weight: 700;">
                     Search
@@ -133,6 +141,7 @@ ob_start(); ?>
             <?php endif; ?>
         </div>
     </section>
+    <script src="assets/js/autocomplete.js"></script>
 </main>
 <?php $main = ob_get_clean();
 
