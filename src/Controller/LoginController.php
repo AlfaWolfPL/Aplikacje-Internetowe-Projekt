@@ -40,7 +40,7 @@ class LoginController {
             session_start();
         }
         if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-            header("Location: /index.php?action=login");
+            header("Location: /index.php?action=admin-login");
             exit;
         }
     }
