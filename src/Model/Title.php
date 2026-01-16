@@ -185,7 +185,7 @@ SQL;
         $stmt->execute(['title_id' => $id, 'category_id' => $categoryId]);
     }
 
-    public static function search(string $query = '', ?int $categoryId = null, ?int $platformId = null): array
+    public static function search(string $query = '', ?int $categoryId = null, ?int $platformId = null, ?string $kind = null): array
     {
         $pdo = static::db();
 
@@ -203,6 +203,11 @@ SQL;
             $sql .= " JOIN title_platforms tp ON t.id = tp.title_id";
             $conditions[] = "tp.platform_id = :platId";
             $params['platId'] = $platformId;
+        }
+
+        if (!empty($kind)) {
+            $conditions[] = "t.kind = :kind";
+            $params['kind'] = $kind;
         }
 
         if (!empty($query)) {
@@ -229,5 +234,18 @@ SQL;
         }
 
         return $titles;
+    }
+
+    public static function findOneByTitleStart(string $query): ?string
+    {
+        if (strlen($query) < 2) return null;
+
+        $pdo = static::db();
+        $sql = "SELECT title FROM titles WHERE title LIKE :query LIMIT 1";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['query' => $query . '%']);
+
+        return $stmt->fetchColumn() ?: null;
     }
 }

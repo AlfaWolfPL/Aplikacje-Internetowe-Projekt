@@ -23,6 +23,10 @@ switch ($action) {
         $controller= new \App\Controller\MovieController();
         $view = $controller->showAction($_REQUEST['id'],$templating,$router);
         break;
+    case 'autocomplete':
+        $controller = new \App\Controller\MovieController();
+        $controller->autocompleteAction($router);
+        break;
     case 'admin-import-csv':
         $controller = new \App\Controller\AdminController();
         $importer = new \App\Service\CSVImporter();
