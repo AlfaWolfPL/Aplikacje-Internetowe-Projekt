@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 $config = new \App\Service\Config();
@@ -83,6 +83,16 @@ switch ($action) {
         $movieId=$_REQUEST['id'];
         $controller = new \App\Controller\AdminController();
         $view = $controller->deleteAction($_REQUEST['id'], $router);
+    case 'admin-login':
+        $controller = new \App\Controller\LoginController();
+        $controller->login();
+        break;
+
+    case 'admin-logout':
+        $controller = new \App\Controller\LoginController();
+        $controller->logout();
+        break;
+
     default:
         $view = 'Not found';
         break;
