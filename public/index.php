@@ -33,8 +33,9 @@ switch ($action) {
         $view = $controller->indexAction($templating,$router);
         break;
     case 'admin-add':
+        $id = $_REQUEST['id']??null;
         $controller= new \App\Controller\AdminController();
-        $view = $controller->addItemAction($templating,$router);
+        $view = $controller->addItemAction($templating,$router,$id);
         break;
     case 'category-add':
         $controller = new \App\Controller\CategoryController();
@@ -68,6 +69,20 @@ switch ($action) {
         $controller = new \App\Controller\PlatformController();
         $controller->deletePlatform($router, $_POST['platform_id'] ? (int)$_POST['platform_id'] : null);
         break;
+    case 'admin-add-item':
+        $keys = array_flip(['title','year','kind','description','genres','platforms','id']);
+        $data=array_intersect_key($_REQUEST,$keys);
+        $data['id'] = $_REQUEST['id']?:null ;
+        $controller = new \App\Controller\AdminController();
+        $view = $controller->addAction($data, $templating, $router);
+        break;
+    case'delete-action':
+        if (! $_REQUEST['id']) {
+            break;
+        }
+        $movieId=$_REQUEST['id'];
+        $controller = new \App\Controller\AdminController();
+        $view = $controller->deleteAction($_REQUEST['id'], $router);
     default:
         $view = 'Not found';
         break;

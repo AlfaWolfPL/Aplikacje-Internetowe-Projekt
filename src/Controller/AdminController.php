@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Model\Category;
+use App\Exception\NotFoundException;
 use App\Model\Title;
 use App\Service\CSVImporter;
 use App\Service\Router;
@@ -28,15 +29,87 @@ class AdminController
         return $html;
     }
 
-    public function addItemAction(Templating $templating, Router $router): string
+    public function addItemAction(Templating $templating, Router $router, $movieId=null): string
     {
+        if($movieId!==null){
+            $movie=Title::find($movieId,true);
+        }
+        else{
+            $movie=null;
+        }
+
+
+        $title = $movie ? 'Edit Movie' : 'Add Movie';
+
+        return $templating->render('admin/add_item.html.php', [
+            'router' => $router,
+            'title'  => $title,
+            'movie'  => $movie,
+        ]);
+    }
+
+    public function deleteAction(int $movieId, Router $router): ?string
+    {
+        $movie = Title::find($movieId);
+        if (! $movie) {
+            throw new NotFoundException("Missing post with id $movieId");
+        }
+
+        $movie->delete();
+        $path = $router->generatePath('admin-index');
+        $router->redirect($path);
+        return null;
+    }
+    public function addAction(?array $requestMovie, Templating $templating, Router $router): ?string
+    {
+        if($requestMovie['id']!==null){
+            $delMovie=Title::find($requestMovie['id'],true);
+            $movie=Title::fromArray($requestMovie);
+            $movie->save();
+            foreach ($delMovie->getPlatforms() as $platform) {
+                Title::removePlatformRelationship($delMovie->getId(), $platform->getId());
+            }
+            foreach($requestMovie['platforms'] as $platform){
+                Title::addPlatformRelationship($movie->getId(), $platform);
+            }
+            foreach ($delMovie->getCategories() as $category) {
+                Title::removeCategoryRelationship($delMovie->getId(), $category->getId());
+            }
+            foreach($requestMovie['genres'] as $category){
+                Title::addCategoryRelationship($movie->getId(), $category);
+            }
+            $path = $router->generatePath('admin-index');
+            $router->redirect($path);
+            return null;
+        }
+        else {
+            if ($requestMovie) {
+                $movie = Title::fromArray($requestMovie);
+                $movie->save();
+
+                foreach ($requestMovie['platforms'] as $platform) {
+                    Title::addPlatformRelationship($movie->getId(), $platform);
+                }
+                foreach ($requestMovie['genres'] as $category) {
+                    Title::addCategoryRelationship($movie->getId(), $category);
+                }
+                $path = $router->generatePath('admin-index');
+                $router->redirect($path);
+                return null;
+            } else {
+                $movie = new Title();
+            }
+        }
+
         $title='Add Item';
 
         $html = $templating->render('admin/add_item.html.php', [
+           'movie' => $movie,
             'router' => $router,
         ]);
         return $html;
     }
+
 
     public function importCsvAction(?array $files, Router $router, CSVImporter $importer): void
     {
