@@ -72,7 +72,7 @@ ob_start();
         <p>Add, edit and monitor your database.</p>
     </div>
     <div class="content-header-right">
-        <button onclick="location.href='<?=$router->generatePath('admin-add')?>'" class="btn btn-primary btn-shadow">
+        <button onclick="location.href='<?=$router->generatePath('admin-add', ['id'=>null])?>'" class="btn btn-primary btn-shadow">
             <span class="material-symbols-outlined">add</span>
             <span>Add New Item</span>
         </button>
@@ -187,10 +187,12 @@ ob_start();
                             </div>
                         </td>
                         <td class="cell-actions">
-                            <button class="icon-btn icon-btn-edit">
+                            <button class="icon-btn icon-btn-edit"
+                                    onclick="window.location.href='<?=$router->generatePath('admin-add', ['id'=> $movie->getId()])?>'">
                                 <span class="material-symbols-outlined">edit</span>
                             </button>
-                            <button class="icon-btn icon-btn-delete">
+                            <button class="icon-btn icon-btn-delete"
+                                    onclick="window.location.href='<?=$router->generatePath('delete-action', ['id'=> $movie->getId()])?>'">
                                 <span class="material-symbols-outlined">delete</span>
                             </button>
                         </td>
