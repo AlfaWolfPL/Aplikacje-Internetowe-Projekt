@@ -7,11 +7,13 @@ use App\Model\Title;
 use App\Service\CSVImporter;
 use App\Service\Router;
 use App\Service\Templating;
+use App\Controller\LoginController;
+
 
 class AdminController
 {
     public function indexAction(Templating $templating, Router $router): ?string
-    {
+    {   LoginController::checkAuth();
         $csvResult = $_SESSION['csv_import_result'] ?? null;
         unset($_SESSION['csv_import_result']);
 
@@ -30,7 +32,7 @@ class AdminController
     }
 
     public function addItemAction(Templating $templating, Router $router, $movieId=null): string
-    {
+    {   LoginController::checkAuth();
         if($movieId!==null){
             $movie=Title::find($movieId,true);
         }
@@ -49,7 +51,7 @@ class AdminController
     }
 
     public function deleteAction(int $movieId, Router $router): ?string
-    {
+    {   LoginController::checkAuth();
         $movie = Title::find($movieId);
         if (! $movie) {
             throw new NotFoundException("Missing post with id $movieId");
@@ -61,7 +63,7 @@ class AdminController
         return null;
     }
     public function addAction(?array $requestMovie, Templating $templating, Router $router): ?string
-    {
+    {   LoginController::checkAuth();
         if($requestMovie['id']!==null){
             $delMovie=Title::find($requestMovie['id'],true);
             $movie=Title::fromArray($requestMovie);
@@ -112,7 +114,7 @@ class AdminController
 
 
     public function importCsvAction(?array $files, Router $router, CSVImporter $importer): void
-    {
+    {   LoginController::checkAuth();
         if ($files && isset($files['csv_file'])) {
             $file = $files['csv_file'];
 
