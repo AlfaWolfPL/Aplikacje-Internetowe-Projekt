@@ -19,7 +19,7 @@ ob_start();
         <div class="page-header-left">
 <!--            TODO mozna uzyc tej strony takze do edycji danego filmu tylko trzeba wypelniac od razu formularz danymi filmu po id
             i wrzucic teksty typu "Create New Entry" w zmienna, zeby mozna bylo wypisywac Create albo Edit w zaleznosci skad sie trafi na formularz-->
-            <h1>Create New Entry</h1>
+            <h1><?= $title?></h1>
             <p>Add new movie/series to database</p>
         </div>
         <div class="page-header-right">

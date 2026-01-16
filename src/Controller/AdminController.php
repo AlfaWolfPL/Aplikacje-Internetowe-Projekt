@@ -41,7 +41,7 @@ class AdminController
         }
 
 
-        $title = $movie ? 'Edit Movie' : 'Add Movie';
+        $title = $movie ? 'Edit Entry' : 'Create New Entry';
 
         return $templating->render('admin/add_item.html.php', [
             'router' => $router,
