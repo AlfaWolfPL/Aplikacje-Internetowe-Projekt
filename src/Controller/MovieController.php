@@ -45,9 +45,14 @@ class MovieController
             throw new NotFoundException("Missing movie with id $movieId");
         }
 
+        $favorites = json_decode($_COOKIE['favorites']) ?? [];
+        $watched = json_decode($_COOKIE['watched']) ?? [];
+
         $html = $templating->render('movie/show.html.php', [
             'movie' => $movie,
             'router' => $router,
+            'isFavorite' => in_array($movieId, $favorites),
+            'isWatched' => in_array($movieId, $watched),
         ]);
         return $html;
     }
