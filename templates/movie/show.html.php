@@ -1,6 +1,8 @@
 <?php
 /** @var \App\Model\Title $movie */
 /** @var \App\Service\Router $router */
+/** @var bool $isWatched */
+/** @var bool $isFavorite */
 
 $title = $movie->getTitle() . ' - PLUSFLIX';
 $bodyClass = 'movie-show';
@@ -74,13 +76,23 @@ ob_start(); ?>
                         <span class="material-symbols-outlined">play_arrow</span>
                         Watch Trailer
                     </button>
-                    <button class="btn btn-secondary">
+                    <button id="watchedBtn" class="btn btn-secondary" onclick="manageWatchedList(<?= $movie->getId(); ?>)">
+                    <?php if ($isWatched === false): ?>
                         <span class="material-symbols-outlined">add</span>
                         Add to Watched
+                    <?php else: ?>
+                        <span class="material-symbols-outlined">remove</span>
+                        Remove from Watched
+                    <?php endif ?>
                     </button>
-                    <button class="btn btn-secondary">
+                    <button id="favoriteBtn" class="btn btn-secondary" onclick="manageFavoritesList(<?= $movie->getId(); ?>)">
+                    <?php if ($isFavorite === false): ?>
                         <span class="material-symbols-outlined">favorite</span>
                         Add to Liked
+                    <?php else: ?>
+                        <span class="material-symbols-outlined">remove</span>
+                        Remove from Liked
+                    <?php endif ?>
                     </button>
                 </div>
 
@@ -180,6 +192,7 @@ ob_start(); ?>
 
             </div>
         </div>
+        <script src="assets/js/user-preferences.js"></script>
     </main>
 
 
