@@ -17,7 +17,25 @@ class MovieController
         $platformId = !empty($_GET['platform']) ? (int)$_GET['platform'] : null;
         $kind = !empty($_GET['kind']) ? $_GET['kind'] : null;
 
+        $mode = !empty($_GET['mode']) ? $_GET['mode'] : null;
+
+        $favorites = json_decode($_COOKIE['favorites'] ?? '[]', true);
+        $watched   = json_decode($_COOKIE['watched']   ?? '[]', true);
+
+
         $titles = Title::search($query, $categoryId, $platformId, $kind);
+
+        if ($mode === 'favorites') {
+            $titles = array_filter($titles, function($t) use ($favorites) {
+                return in_array($t->getId(), $favorites);
+            });
+        }
+
+        if ($mode === 'watched') {
+            $titles = array_filter($titles, function($t) use ($watched) {
+                return in_array($t->getId(), $watched);
+            });
+        }
 
         $allCategories = Category::findAll();
         $allPlatforms = Platform::findAll();
@@ -45,8 +63,8 @@ class MovieController
             throw new NotFoundException("Missing movie with id $movieId");
         }
 
-        $favorites = json_decode($_COOKIE['favorites']) ?? [];
-        $watched = json_decode($_COOKIE['watched']) ?? [];
+        $favorites = json_decode($_COOKIE['favorites'] ?? '[]', true);
+        $watched   = json_decode($_COOKIE['watched']   ?? '[]', true);
 
         $html = $templating->render('movie/show.html.php', [
             'movie' => $movie,

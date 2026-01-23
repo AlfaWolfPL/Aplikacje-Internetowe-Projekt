@@ -23,7 +23,7 @@ ob_start(); ?>
             Find where to <span class="search-highlight">watch</span> anything
         </h1>
 
-        <form action="<?= $router->generatePath('movie-index') ?>" method="GET" class="search-form">
+        <form action="<?= $router->generatePath('movie-index') ?>" method="GET" class="search-form" id="searchForm">
             <div class="search-container">
                 <span class="search-icon material-symbols-outlined">search</span>
                 <input type="text" name="q" class="search-input"
@@ -64,6 +64,22 @@ ob_start(); ?>
                         <option value="series" <?= ($queryParams['kind'] === 'series') ? 'selected' : '' ?>>Series</option>
                     </select>
                 </div>
+                <div style="position: relative">
+                    <label class="fav-label">
+                        <span class="material-symbols-outlined icon">favorite</span>
+                        <input type="checkbox" id="cbFavorites" <?= (isset($_GET['mode']) && $_GET['mode'] === 'favorites') ? 'checked' : '' ?>>
+<!--                        <span>Favorites</span>-->
+                    </label>
+                </div>
+                <div style="position: relative">
+                    <label class="fav-label">
+                        <span class="material-symbols-outlined icon">done_outline</span>
+                        <input type="checkbox" id="cbMarked" <?= (isset($_GET['mode']) && $_GET['mode'] === 'watched') ? 'checked' : '' ?>>
+<!--                        <span>Watched</span>-->
+                    </label>
+                </div>
+                    <input type="hidden" name="mode" id="filterMode" value="">
+
 
                 <button type="submit" class="filter-btn" style="background-color: var(--primary-color); color: black; border: none; font-weight: 700;">
                     Search
@@ -142,6 +158,7 @@ ob_start(); ?>
         </div>
     </section>
     <script src="assets/js/autocomplete.js"></script>
+    <script src="assets/js/favorite-watched.js"></script>
 </main>
 <?php $main = ob_get_clean();
 
