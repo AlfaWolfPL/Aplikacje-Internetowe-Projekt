@@ -185,7 +185,7 @@ SQL;
         $stmt->execute(['title_id' => $id, 'category_id' => $categoryId]);
     }
 
-    public static function search(string $query = '', ?int $categoryId = null, ?int $platformId = null, ?string $kind = null): array
+    public static function search(string $query = '', ?int $categoryId = null, ?int $platformId = null, ?string $kind = null, int $limit = 1000, int $offset = 0): array
     {
         $pdo = static::db();
 
@@ -221,6 +221,8 @@ SQL;
 
         $sql .= " GROUP BY t.id";
 
+        $sql .= " LIMIT " . $limit . " OFFSET " . $offset;
+
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
@@ -234,6 +236,42 @@ SQL;
         }
 
         return $titles;
+    }
+
+    public static function countSearch(string $query = '', ?int $categoryId = null, ?int $platformId = null, ?string $kind = null): int
+    {
+        $pdo = static::db();
+        $sql = "SELECT COUNT(DISTINCT t.id) FROM titles t";
+        $params = [];
+        $conditions = [];
+
+        if ($categoryId) {
+            $sql .= " JOIN title_categories tc ON t.id = tc.title_id";
+            $conditions[] = "tc.category_id = :catId";
+            $params['catId'] = $categoryId;
+        }
+        if ($platformId) {
+            $sql .= " JOIN title_platforms tp ON t.id = tp.title_id";
+            $conditions[] = "tp.platform_id = :platId";
+            $params['platId'] = $platformId;
+        }
+        if ($kind) {
+            $conditions[] = "t.kind = :kind";
+            $params['kind'] = $kind;
+        }
+        if ($query) {
+            $conditions[] = "(t.title LIKE :query OR t.description LIKE :query)";
+            $params['query'] = '%' . $query . '%';
+        }
+
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(' AND ', $conditions);
+        }
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        return (int)$stmt->fetchColumn();
     }
 
     public static function findOneByTitleStart(string $query): ?string
