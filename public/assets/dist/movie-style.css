@@ -591,3 +591,22 @@
     color: var(--text-gray);
     margin: 0;
 }
+.fav-label {
+    width: 100%;
+    border: 2px solid transparent;
+    border-radius: 0.75rem;
+    padding: 0.8rem 2rem 0.8rem 2rem;
+    font-size: 1rem;
+    color: var(--text-white);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    display: flex;
+    align-items: center;
+    /*gap: .6rem;*/
+    background-color: var(--bg-dark);
+}
+
+.fav-label .icon {
+    color: var(--text-gray);
+}

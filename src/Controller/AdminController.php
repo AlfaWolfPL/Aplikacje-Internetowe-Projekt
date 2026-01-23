@@ -1,13 +1,11 @@
 <?php
 namespace App\Controller;
 
-use App\Model\Category;
 use App\Exception\NotFoundException;
 use App\Model\Title;
 use App\Service\CSVImporter;
 use App\Service\Router;
 use App\Service\Templating;
-use App\Controller\LoginController;
 
 
 class AdminController
