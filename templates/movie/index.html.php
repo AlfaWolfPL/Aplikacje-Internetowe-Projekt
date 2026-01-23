@@ -25,73 +25,76 @@ ob_start(); ?>
         </h1>
 
         <form action="<?= $router->generatePath('movie-index') ?>" method="GET" class="search-form" id="searchForm">
-            <div class="search-container">
-                <span class="search-icon material-symbols-outlined">search</span>
-                <input type="text" name="q" class="search-input"
-                       placeholder="Search titles, actors, or genres..."
-                       value="<?= htmlspecialchars($queryParams['q'] ?? '') ?>">
-            </div>
-
-            <div class="filters-container">
-
-                <div style="position: relative;">
-                    <span class="material-symbols-outlined filter-btn-select">category</span>
-                    <select name="category" class="search-input">
-                        <option value="">Categories</option>
-                        <?php foreach ($categories as $cat): ?>
-                            <option value="<?= $cat->getId() ?>" <?= ($queryParams['category'] == $cat->getId()) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($cat->getName()) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+            <div class="search-wrapper">
+                <div class="search-container">
+                    <span class="search-icon material-symbols-outlined">search</span>
+                    <input type="text" name="q" class="search-input"
+                           placeholder="Search titles, actors, or genres..."
+                           value="<?= htmlspecialchars($queryParams['q'] ?? '') ?>">
                 </div>
 
-                <div style="position: relative;">
-                    <span class="material-symbols-outlined filter-btn-select">tv</span>
-                    <select name="platform" class="search-input">
-                        <option value="">Platforms</option>
-                        <?php foreach ($platforms as $plat): ?>
-                            <option value="<?= $plat->getId() ?>" <?= ($queryParams['platform'] == $plat->getId()) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($plat->getName()) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div style="position: relative;">
-                    <span class="material-symbols-outlined" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); pointer-events: none; font-size: 1.2rem;">movie_filter</span>
-                    <select name="kind" class="search-input" style="padding-left: 2.8rem; cursor: pointer; appearance: none;">
-                        <option value="">All kinds</option>
-                        <option value="movie" <?= ($queryParams['kind'] === 'movie') ? 'selected' : '' ?>>Movies</option>
-                        <option value="series" <?= ($queryParams['kind'] === 'series') ? 'selected' : '' ?>>Series</option>
-                    </select>
-                </div>
-                <div style="position: relative">
-                    <label class="fav-label">
-                        <span class="material-symbols-outlined icon">favorite</span>
-                        <input type="checkbox" id="cbFavorites" <?= (isset($_GET['mode']) && $_GET['mode'] === 'favorites') ? 'checked' : '' ?>>
-<!--                        <span>Favorites</span>-->
-                    </label>
-                </div>
-                <div style="position: relative">
-                    <label class="fav-label">
-                        <span class="material-symbols-outlined icon">done_outline</span>
-                        <input type="checkbox" id="cbMarked" <?= (isset($_GET['mode']) && $_GET['mode'] === 'watched') ? 'checked' : '' ?>>
-<!--                        <span>Watched</span>-->
-                    </label>
-                </div>
+                <div class="filters-container">
+
+                    <div style="position: relative;">
+                        <span class="material-symbols-outlined filter-btn-select">category</span>
+                        <select name="category" class="search-input">
+                            <option value="">Categories</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?= $cat->getId() ?>" <?= ($queryParams['category'] == $cat->getId()) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($cat->getName()) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div style="position: relative;">
+                        <span class="material-symbols-outlined filter-btn-select">tv</span>
+                        <select name="platform" class="search-input">
+                            <option value="">Platforms</option>
+                            <?php foreach ($platforms as $plat): ?>
+                                <option value="<?= $plat->getId() ?>" <?= ($queryParams['platform'] == $plat->getId()) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($plat->getName()) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div style="position: relative;">
+                        <span class="material-symbols-outlined" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); pointer-events: none; font-size: 1.2rem;">movie_filter</span>
+                        <select name="kind" class="search-input" style="padding-left: 2.8rem; cursor: pointer; appearance: none;">
+                            <option value="">All kinds</option>
+                            <option value="movie" <?= ($queryParams['kind'] === 'movie') ? 'selected' : '' ?>>Movies</option>
+                            <option value="series" <?= ($queryParams['kind'] === 'series') ? 'selected' : '' ?>>Series</option>
+                        </select>
+                    </div>
+                    <div style="position: relative">
+                        <label class="fav-label">
+                            <span class="material-symbols-outlined icon">favorite</span>
+                            <input type="checkbox" id="cbFavorites" <?= (isset($_GET['mode']) && $_GET['mode'] === 'favorites') ? 'checked' : '' ?>>
+                                               <span>Favorites</span>
+                        </label>
+                    </div>
+                    <div style="position: relative">
+                        <label class="fav-label">
+                            <span class="material-symbols-outlined icon">done_outline</span>
+                            <input type="checkbox" id="cbMarked" <?= (isset($_GET['mode']) && $_GET['mode'] === 'watched') ? 'checked' : '' ?>>
+                                        <span>Watched</span>
+                        </label>
+                    </div>
                     <input type="hidden" name="mode" id="filterMode" value="">
 
 
-                <button type="submit" class="filter-btn" style="background-color: var(--primary-color); color: black; border: none; font-weight: 700;">
-                    Search
-                </button>
+                    <button type="submit" class="filter-btn" style="background-color: var(--primary-color); color: black; border: none; font-weight: 700;">
+                        Search
+                    </button>
 
-                <?php if (!empty($queryParams['q']) || !empty($queryParams['category']) || !empty($queryParams['platform'])): ?>
-                    <a href="<?= $router->generatePath('movie-index') ?>" class="filter-btn" style="text-decoration: none; color: var(--text-gray);">
-                        Clear
-                    </a>
-                <?php endif; ?>
+                    <?php if (!empty($queryParams['q']) || !empty($queryParams['category']) || !empty($queryParams['platform'])): ?>
+                        <a href="<?= $router->generatePath('movie-index') ?>" class="filter-btn" style="text-decoration: none; color: var(--text-gray);">
+                            Clear
+                        </a>
+                    <?php endif; ?>
+                </div>
             </div>
+
         </form>
     </section>
 
@@ -113,15 +116,21 @@ ob_start(); ?>
                 </div>
             <?php else: ?>
                 <?php foreach ($titles as $movie): ?>
-                    <div class="movie-card">
-
                         <div class="movie-info">
-                            <h3><?= htmlspecialchars($movie->getTitle(), ENT_QUOTES) ?></h3>
+                            <a href="<?= $router->generatePath('movie-show', ['id' => $movie->getId()]) ?>" class="btn-play">
 
-                            <div class="meta-row">
-                                <span class="match-score"><?= htmlspecialchars(ucfirst($movie->getKind()), ENT_QUOTES) ?></span>
+                                <div class="movie-poster">
+                                    <img src="assets/posters/<?= urlencode($movie->getId()) ?>.jpg" alt="<?= htmlspecialchars($movie->getTitle(), ENT_QUOTES) ?>">
+                                </div>
+                            </a>
+                            <div class="categories-container">
 
-                                <span class="quality-badge">HD</span>
+                                <h3><?= htmlspecialchars($movie->getTitle(), ENT_QUOTES) ?></h3>
+
+
+                                <div class="meta-row">
+                                    <span class="match-score"><?= htmlspecialchars(ucfirst($movie->getKind()), ENT_QUOTES) ?></span>
+                                </div>
                             </div>
 
                             <div class="genre-list">
@@ -133,12 +142,6 @@ ob_start(); ?>
                                 }
                                 ?>
                             </div>
-
-                            <div class="action-buttons">
-                                <span class="material-symbols-outlined">play_arrow</span>
-                                <span class="material-symbols-outlined">add</span>
-                            </div>
-
                             <div class="platforms-list" style="font-size: 0.8em; color: #aaa; margin-top: 5px;">
                                 <?php
                                 $plats = $movie->getPlatforms();
@@ -146,13 +149,6 @@ ob_start(); ?>
                                 echo htmlspecialchars(implode(', ', $platNames), ENT_QUOTES);
                                 ?>
                             </div>
-                            <a href="<?= $router->generatePath('movie-show', ['id' => $movie->getId()]) ?>" class="btn-play">
-
-                            <div class="movie-poster">
-                                <img src="https://placehold.co/210x350?text=<?= urlencode($movie->getTitle()) ?>" alt="<?= htmlspecialchars($movie->getTitle(), ENT_QUOTES) ?>">
-                            </div>
-                            </a>
-                        </div>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>

@@ -16,13 +16,10 @@ ob_start(); ?>
         <div class="pf-container header-inner">
             <div class="header-left">
                 <div class="logo">
-                    <span class="logo-icon"></span>
                     <span class="logo-text">PLUSFLIX</span>
                 </div>
                 <nav class="main-nav">
                     <a href="<?= $router->generatePath('movie-index') ?>" class="nav-item">Movies</a>
-<!--                    <a href="#" class="nav-item">Series</a>-->
-<!--                    <a href="#" class="nav-item">New & Popular</a>-->
                 </nav>
             </div>
             <div class="header-right">
@@ -42,7 +39,7 @@ ob_start(); ?>
 
             <div class="poster-column">
                 <div class="poster-card">
-                    <img src="https://placehold.co/400x600?text=<?= urlencode($movie->getTitle()) ?>"
+                    <img src="assets/posters/<?= urlencode($movie->getId()) ?>.jpg"
                          alt="<?= htmlspecialchars($movie->getTitle()) ?>"
                          class="main-poster">
 

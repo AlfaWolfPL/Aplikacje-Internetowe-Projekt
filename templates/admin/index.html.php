@@ -125,7 +125,8 @@ ob_start();
                     <tr>
                         <td>
                             <div class="media-thumb">
-<!--                                TODO pobrac i wyswietlac miniaturki filmow-->
+                                <img src="assets/posters/<?= urlencode($movie->getId()) ?>.jpg">
+
                             </div>
                         </td>
                         <td>
