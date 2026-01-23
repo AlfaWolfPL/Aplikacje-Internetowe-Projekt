@@ -17,13 +17,20 @@ class MovieController
         $platformId = !empty($_GET['platform']) ? (int)$_GET['platform'] : null;
         $kind = !empty($_GET['kind']) ? $_GET['kind'] : null;
 
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $perPage = 10;
+        $offset = ($page - 1) * $perPage;
+
+        $totalMovies = Title::countSearch($query, $categoryId, $platformId, $kind);
+        $totalPages = ceil($totalMovies / $perPage);
+
         $mode = !empty($_GET['mode']) ? $_GET['mode'] : null;
 
         $favorites = json_decode($_COOKIE['favorites'] ?? '[]', true);
         $watched   = json_decode($_COOKIE['watched']   ?? '[]', true);
 
 
-        $titles = Title::search($query, $categoryId, $platformId, $kind);
+        $titles = Title::search($query, $categoryId, $platformId, $kind, $perPage, $offset);
 
         if ($mode === 'favorites') {
             $titles = array_filter($titles, function($t) use ($favorites) {
@@ -49,6 +56,11 @@ class MovieController
                 'category' => $categoryId,
                 'platform' => $platformId,
                 'kind' => $kind,
+            ],
+            'pagination' => [
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'totalItems' => $totalMovies,
             ],
             'router' => $router,
         ]);

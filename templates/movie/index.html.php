@@ -4,6 +4,7 @@
 /** @var array $queryParams */
 /** @var \App\Model\Category[] $categories */
 /** @var \App\Model\Platform[] $platforms */
+/** @var array $pagination */
 
 $title = 'Movies';
 $bodyClass = 'movie-index';
@@ -156,6 +157,39 @@ ob_start(); ?>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
+        <?php if ($pagination['totalPages'] > 1): ?>
+            <div class="pagination-container" style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; padding-bottom: 2rem;">
+
+                <?php
+                $buildUrl = function($pageNum) use ($router, $queryParams) {
+                    $params = $queryParams;
+                    $params['page'] = $pageNum;
+                    return $router->generatePath('movie-index') . '&' . http_build_query(array_filter($params));
+                };
+                ?>
+
+                <?php if ($pagination['currentPage'] > 1): ?>
+                    <a href="<?= $buildUrl($pagination['currentPage'] - 1) ?>" class="filter-btn" style="text-decoration: none;">
+                        &laquo; Next
+                    </a>
+                <?php else: ?>
+                    <span class="filter-btn" style="opacity: 0.5; cursor: default;">&laquo; Previous</span>
+                <?php endif; ?>
+
+                <span style="display: flex; align-items: center; color: var(--text-gray);">
+            Page <?= $pagination['currentPage'] ?> of <?= $pagination['totalPages'] ?>
+        </span>
+
+                <?php if ($pagination['currentPage'] < $pagination['totalPages']): ?>
+                    <a href="<?= $buildUrl($pagination['currentPage'] + 1) ?>" class="filter-btn" style="text-decoration: none;">
+                        Next &raquo;
+                    </a>
+                <?php else: ?>
+                    <span class="filter-btn" style="opacity: 0.5; cursor: default;">Next &raquo;</span>
+                <?php endif; ?>
+
+            </div>
+        <?php endif; ?>
     </section>
     <script src="assets/js/autocomplete.js"></script>
     <script src="assets/js/favorite-watched.js"></script>
