@@ -18,3 +18,9 @@ Use Symfony Framework or Laravel instead.
 ```
 lessc $ProjectFileDir$\public\assets\src\less\style.less $ProjectFileDir$\public\assets\dist\style.min.css --clean-css --source-map
 ```
+3. Create data.db file in project root directory
+4. Run 01-init-movie-platform_categories.sql on this sqlite database
+5. Run local php server:
+```
+   php -S localhost:8000 -t ./public
+```

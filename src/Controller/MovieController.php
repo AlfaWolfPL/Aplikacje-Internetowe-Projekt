@@ -1,0 +1,118 @@
+<?php
+namespace App\Controller;
+
+use App\Exception\NotFoundException;
+use App\Model\Category;
+use App\Model\Platform;
+use App\Model\Title;
+use App\Service\Router;
+use App\Service\Templating;
+
+class MovieController
+{
+    public function indexAction(Templating $templating, Router $router): ?string
+    {
+        $query = $_GET['q'] ?? '';
+        $categoryId = !empty($_GET['category']) ? (int)$_GET['category'] : null;
+        $platformId = !empty($_GET['platform']) ? (int)$_GET['platform'] : null;
+        $kind = !empty($_GET['kind']) ? $_GET['kind'] : null;
+
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $perPage = 10;
+        $offset = ($page - 1) * $perPage;
+
+        $totalMovies = Title::countSearch($query, $categoryId, $platformId, $kind);
+        $totalPages = ceil($totalMovies / $perPage);
+
+        $mode = !empty($_GET['mode']) ? $_GET['mode'] : null;
+
+        $favorites = json_decode($_COOKIE['favorites'] ?? '[]', true);
+        $watched   = json_decode($_COOKIE['watched']   ?? '[]', true);
+
+
+        $titles = Title::search($query, $categoryId, $platformId, $kind, $perPage, $offset);
+
+        if ($mode === 'favorites') {
+            $titles = array_filter($titles, function($t) use ($favorites) {
+                return in_array($t->getId(), $favorites);
+            });
+        }
+
+        if ($mode === 'watched') {
+            $titles = array_filter($titles, function($t) use ($watched) {
+                return in_array($t->getId(), $watched);
+            });
+        }
+
+        $allCategories = Category::findAll();
+        $allPlatforms = Platform::findAll();
+
+        $html = $templating->render('movie/index.html.php', [
+            'titles' => $titles,
+            'categories' => $allCategories,
+            'platforms' => $allPlatforms,
+            'queryParams' => [
+                'q' => $query,
+                'category' => $categoryId,
+                'platform' => $platformId,
+                'kind' => $kind,
+            ],
+            'pagination' => [
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'totalItems' => $totalMovies,
+            ],
+            'router' => $router,
+        ]);
+        return $html;
+    }
+
+
+    public function showAction(int $movieId, Templating $templating, Router $router): ?string
+    {
+        $movie = Title::find($movieId,true);
+        if (! $movie) {
+            throw new NotFoundException("Missing movie with id $movieId");
+        }
+
+        $favorites = json_decode($_COOKIE['favorites'] ?? '[]', true);
+        $watched   = json_decode($_COOKIE['watched']   ?? '[]', true);
+
+        $html = $templating->render('movie/show.html.php', [
+            'movie' => $movie,
+            'router' => $router,
+            'isFavorite' => in_array($movieId, $favorites),
+            'isWatched' => in_array($movieId, $watched),
+        ]);
+        return $html;
+    }
+
+    public function autocompleteAction(): void
+    {
+        if (ob_get_length()) ob_clean();
+
+        header('Content-Type: application/json; charset=utf-8');
+
+        $query = $_GET['q'] ?? '';
+
+        if (strlen($query) < 2) {
+            echo json_encode(['suggestion' => null]);
+            exit;
+        }
+
+        $title = \App\Model\Title::findOneByTitleStart($query);
+
+        if ($title && stripos($title, $query) === 0) {
+            $suggestion = substr($title, strlen($query));
+            echo json_encode([
+                'full_title' => $title,
+                'suggestion_part' => $suggestion
+            ]);
+        } else {
+            echo json_encode(['suggestion' => null]);
+        }
+
+        exit;
+    }
+
+}

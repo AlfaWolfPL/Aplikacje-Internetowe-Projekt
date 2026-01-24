@@ -5,12 +5,12 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/assets/dist/style.min.css">
-    <title><?= $title ?? 'Custom Framework' ?></title>
+    <link rel="stylesheet" href="/assets/dist/movie-style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+    <title><?= $title ?? 'PLUSFLIX' ?></title>
 </head>
 <body <?= isset($bodyClass) ? "class='$bodyClass'" : '' ?>>
-<nav><?php require(__DIR__ . DIRECTORY_SEPARATOR . 'nav.html.php') ?></nav>
 <main><?= $main ?? null ?></main>
-<footer>&copy;<?= date('Y') ?> Custom Framework</footer>
+<footer class="app-footer"><?php require(__DIR__ . DIRECTORY_SEPARATOR . 'footer.html.php') ?></footer>
 </body>
 </html>
